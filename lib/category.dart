@@ -44,11 +44,10 @@ class Category extends StatelessWidget {
       child: SizedBox(
         height: _rowHeight,
         child: InkWell(
-          borderRadius: _borderRadius,
           highlightColor: color,
           splashColor: color,
           onTap: () {
-            print('I was tapped!');
+            print(name + ' was tapped!');
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
