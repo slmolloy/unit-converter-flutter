@@ -5,8 +5,6 @@
 // To keep your imports tidy, follow the ordering guidelines at
 // https://www.dartlang.org/guides/language/effective-dart/style#ordering
 import 'package:flutter/material.dart';
-import 'unit_converter.dart';
-import 'unit.dart';
 import 'category.dart';
 
 const _rowHeight = 100.0;
