@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:hello_rectangle/api.dart';
 import 'package:hello_rectangle/unit_converter.dart';
 
 import 'category_title.dart';
@@ -73,6 +74,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
 
     if (_categories.isEmpty) {
       await _retrieveLocalCategories();
+      await _retrieveApiCategory();
     }
   }
 
@@ -101,6 +103,40 @@ class _CategoryRouteState extends State<CategoryRoute> {
         _categories.add(category);
       });
       categoryIndex += 1;
+    }
+  }
+
+  Future<void> _retrieveApiCategory() async {
+    setState(() {
+      for (var apiCategory in apiCategories) {
+        _categories.add(Category(
+          name: apiCategory.name,
+          units: [],
+          color: _baseColors.last,
+          iconLocation: _icons.last,
+        ));
+      }
+    });
+
+    final api = Api();
+    for (var apiCategory in apiCategories) {
+      final jsonUnits = await api.getUnits(apiCategory.route);
+
+      if (jsonUnits != null) {
+        final units = <Unit>[];
+        for (var unit in jsonUnits) {
+          units.add(Unit.fromJson(unit));
+        }
+        setState(() {
+          _categories.removeWhere((item) => item.name == apiCategory.name);
+          _categories.add(Category(
+            name: apiCategory.name,
+            units: units,
+            color: _baseColors.last,
+            iconLocation: _icons.last,
+          ));
+        });
+      }
     }
   }
 
