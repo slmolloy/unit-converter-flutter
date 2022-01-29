@@ -114,6 +114,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
           units: [],
           color: _baseColors.last,
           iconLocation: _icons.last,
+          isApiCategory: true,
         ));
       }
     });
@@ -134,6 +135,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
             units: units,
             color: _baseColors.last,
             iconLocation: _icons.last,
+            isApiCategory: true,
           ));
         });
       }
@@ -150,7 +152,12 @@ class _CategoryRouteState extends State<CategoryRoute> {
     if (deviceOrientation == Orientation.portrait) {
       return ListView.builder(
         itemBuilder: (BuildContext context, int index) {
-          return CategoryTitle(category: _categories[index], onTap: _onCategoryTap);
+          var _category = _categories[index];
+          return CategoryTitle(
+              category: _category,
+              onTap: _category.isApiCategory && _category.units.isEmpty
+                  ? null
+                  : _onCategoryTap);
         },
         itemCount: _categories.length,
       );

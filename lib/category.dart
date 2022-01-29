@@ -6,11 +6,13 @@ class Category {
   final ColorSwatch color;
   final List<Unit> units;
   final String iconLocation;
+  final bool isApiCategory;
 
   const Category({
     required this.name,
     required this.color,
     required this.units,
     required this.iconLocation,
-  });
+    bool? isApiCategory,
+  }) : isApiCategory = isApiCategory ?? false;
 }

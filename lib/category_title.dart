@@ -16,7 +16,7 @@ final _borderRadius = BorderRadius.circular(_rowHeight / 2);
 /// a colored [InkWell] animation.
 class CategoryTitle extends StatelessWidget {
   final Category category;
-  final ValueChanged<Category> onTap;
+  final ValueChanged<Category>? onTap;
 
   /// Creates a [Category].
   ///
@@ -25,20 +25,22 @@ class CategoryTitle extends StatelessWidget {
   const CategoryTitle({
     Key? key,
     required this.category,
-    required this.onTap,
+    this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
+      color: onTap == null
+          ? const Color.fromRGBO(50, 50, 50, 0.2)
+          : Colors.transparent,
       child: SizedBox(
         height: _rowHeight,
         child: InkWell(
           borderRadius: _borderRadius,
           highlightColor: category.color['highlight'],
           splashColor: category.color['splash'],
-          onTap: () => onTap(category),
+          onTap: onTap == null ? null : () => onTap!(category),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
