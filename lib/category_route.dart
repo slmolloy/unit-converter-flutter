@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hello_rectangle/unit_converter.dart';
 
@@ -17,17 +19,6 @@ class _CategoryRouteState extends State<CategoryRoute> {
   Category? _defaultCategory;
   Category? _currentCategory;
   final _categories = <Category>[];
-
-  static const _categoryNames = <String>[
-    'Length',
-    'Area',
-    'Volume',
-    'Mass',
-    'Time',
-    'Digital Storage',
-    'Energy',
-    'Currency',
-  ];
 
   static const _baseColors = <ColorSwatch>[
     ColorSwatch(0xFF6AB7A8, {
@@ -65,20 +56,41 @@ class _CategoryRouteState extends State<CategoryRoute> {
     }),
   ];
 
+
   @override
-  void initState() {
-    super.initState();
-    for (var i = 0; i < _categoryNames.length; i++) {
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    if (_categories.isEmpty) {
+      await _retrieveLocalCategories();
+    }
+  }
+
+  Future<void> _retrieveLocalCategories() async {
+    final json = DefaultAssetBundle.of(context)
+        .loadString('assets/data/regular_units.json');
+    final data = const JsonDecoder().convert(await json);
+    if (data is! Map) {
+      throw ('Data retrieved from API is not a Map');
+    }
+    var categoryIndex = 0;
+    for (var key in data.keys) {
+      final List<Unit> units =
+          data[key].map<Unit>((dynamic data) => Unit.fromJson(data)).toList();
+
       var category = Category(
-        name: _categoryNames[i],
-        color: _baseColors[i],
+        name: key,
+        units: units,
+        color: _baseColors[categoryIndex],
         iconLocation: Icons.cake,
-        units: _retrieveUnitList(_categoryNames[i]),
       );
-      if (i == 0) {
-        _defaultCategory = category;
-      }
-      _categories.add(category);
+      setState(() {
+        if (categoryIndex == 0) {
+          _defaultCategory = category;
+        }
+        _categories.add(category);
+      });
+      categoryIndex += 1;
     }
   }
 
@@ -107,18 +119,18 @@ class _CategoryRouteState extends State<CategoryRoute> {
     }
   }
 
-  List<Unit> _retrieveUnitList(String categoryName) {
-    return List.generate(10, (int i) {
-      i += 1;
-      return Unit(
-        name: '$categoryName Unit $i',
-        conversion: i.toDouble(),
-      );
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    if (_categories.isEmpty) {
+      return const Center(
+        child: SizedBox(
+          height: 180.0,
+          width: 180.0,
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     assert(debugCheckHasMediaQuery(context));
     final listView = Padding(
       padding: const EdgeInsets.only(
@@ -133,7 +145,7 @@ class _CategoryRouteState extends State<CategoryRoute> {
       currentCategory: _currentCategory ?? _defaultCategory!,
       frontPanel: _currentCategory == null
         ? UnitConverter(category: _defaultCategory!)
-        : UnitConverter(category: _defaultCategory!),
+        : UnitConverter(category: _currentCategory!),
       backPanel: listView,
       frontTitle: const Text('Unit Converter'),
       backTitle: const Text('Select a Category'),
