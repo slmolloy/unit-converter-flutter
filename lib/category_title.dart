@@ -46,9 +46,10 @@ class CategoryTitle extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Icon(
+                  child: Image.asset(
                     category.iconLocation,
-                    size: 48.0,
+                    width: 48.0,
+                    fit: BoxFit.fitWidth,
                   ),
                 ),
                 Center(
