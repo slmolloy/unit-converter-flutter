@@ -79,7 +79,7 @@ class _BackdropTitle extends AnimatedWidget {
   Widget build(BuildContext context) {
     final Animation<double> animation = listenable as Animation<double>;
     return DefaultTextStyle(
-      style: Theme.of(context).primaryTextTheme.headline6!,
+      style: Theme.of(context).primaryTextTheme.headline6!.copyWith(fontWeight: FontWeight.w800, fontStyle: FontStyle.italic),
       softWrap: false,
       overflow: TextOverflow.ellipsis,
       // Here, we do a custom cross fade between backTitle and frontTitle.

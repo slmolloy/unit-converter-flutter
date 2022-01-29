@@ -56,7 +56,7 @@ class CategoryTitle extends StatelessWidget {
                   child: Text(
                     category.name,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headline5?.copyWith(fontStyle: FontStyle.italic),
                   ),
                 ),
               ],
